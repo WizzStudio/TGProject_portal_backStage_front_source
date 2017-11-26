@@ -1,4 +1,4 @@
-import { observable} from 'mobx';
+import { observable,action} from 'mobx';
 
 
 class AppState {
@@ -7,7 +7,7 @@ class AppState {
   constructor() {
   }
   
-  countUP(){
+ @action countUP(){
     this.testCount ++;
     console.log(this.testCount)
   }

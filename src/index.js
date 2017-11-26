@@ -9,7 +9,7 @@ const appState = new AppState();
 // 加载组件
 import {Hello} from './hello';
 
-// 加载模块
+// 加载样式
 import './common/styles/index.scss';
 
 const app = document.getElementById('root');

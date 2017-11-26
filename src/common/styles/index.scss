@@ -1,6 +1,10 @@
-body {
-  background-color: lightgrey;
-}
-
+@import "./normalize";
 @import "./mixins";
 @import "./variables";
+
+body {
+  background-color: $clr_bg_gray;
+}
+
+
+
