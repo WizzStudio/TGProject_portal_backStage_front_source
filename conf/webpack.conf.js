@@ -4,6 +4,7 @@ const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FailPlugin = require('webpack-fail-plugin');
+const babelpolyfill = require("babel-polyfill");
 const autoprefixer = require('autoprefixer');
 
 module.exports = {

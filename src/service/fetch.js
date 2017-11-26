@@ -1,9 +1,9 @@
-import {baseURL} from '../config/baseURL';
+import baseURL from '../config/baseURL';
 import axios from 'axios';
-
+import "babel-polyfill"
 /*global configuration*/
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
-axios.defaults.baseURL = baseURL;
+// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// axios.defaults.baseURL = baseURL;
 
 axios.interceptors.response.use(function (response) {
   return response;
@@ -18,21 +18,27 @@ axios.interceptors.response.use(function (response) {
     })
   } else if (error.request) {
     // The request was made but no response was received
-    return Promise.reject(error.request)
+    return Promise.reject(error)
   } else {
     // Something happened in setting up the request that triggered an Error
-    return Promise.reject(error.message)
+    return Promise.reject(error)
   }
 });
 
 
 export default async (type = 'GET', url = '', data = {}, config = {}) => {
   // 提示： 这里的url填相对路径 例如'/test/example'
+  url = baseURL+url;
   type = type.toUpperCase();
   
   /*FOR POST*/
   if (type === 'POST') {
     return axios.post(url, JSON.stringify(data) == '{}' ? '' : data);
+  }
+  
+  /*FOR GET*/
+  if (type === 'GET') {
+    return axios.get(url);
   }
   
   /*FOR DELETE*/
