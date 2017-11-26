@@ -3,8 +3,8 @@
  */
 /* 常用工具函数
  * @author Acery
- * @version 0.0.3
- * @mention: 需要拆分
+ * @version 0.0.4
+ * @mention: 拆分完成，要补充功能
  */
 
 /**
@@ -40,6 +40,9 @@ const countFn = (countTime, basicMs, progressFn, callBackFn) => {
 const parseTime = (msTime) => {
   let _tempDate = new Date(msTime)
   return {
+    year: _tempDate.getFullYear().toString(),
+    month: _tempDate.getMonth() + 1 > 9 ? (_tempDate.getMonth() + 1).toString() : '0' + (_tempDate.getMonth() + 1).toString(),
+    date: _tempDate.getDate() > 9 ? _tempDate.getDate().toString() : '0' + _tempDate.getDate().toString(),
     hour: _tempDate.getHours() > 9 ? _tempDate.getHours().toString() : '0' + _tempDate.getHours().toString(),
     minute: _tempDate.getMinutes() > 9 ? _tempDate.getMinutes().toString() : '0' + _tempDate.getMinutes().toString()
   }
@@ -48,7 +51,7 @@ const parseTime = (msTime) => {
 /**
  * 判断时间与今日的关系（明天/今天）
  * @param msTime 传进日期的毫秒表示
- * @returns {number} -2: 年月不同 -1： 课程还差很久到今天 2：课程已过时 1： 课程是明天 0： 课程是今天
+ * @returns {number}
  */
 const judgeTime = (msTime) => {
   let _nowDate = new Date()
@@ -58,18 +61,18 @@ const judgeTime = (msTime) => {
   let _d = _nowDate.getDate()
   if (_y === _msTime.getFullYear() && _m === _msTime.getMonth() + 1) {
     if (_d - _msTime.getDate() === 0) {
-      return 0 // 课程是今天
+      return 0 // 今天
     }
     if (_d - _msTime.getDate() === -1) {
-      return 1 // 课程是明天
+      return 1 // 明天
     }
     if (_d - _msTime.getDate() > 0) {
-      return 2 // 课程已过时
+      return 2 // 过时
     } else {
-      return -1 // 课程还差很久才到
+      return -1 // 将来
     }
   } else {
-    return -2 //  年/月不相同
+    return -2 //  跨年
   }
 }
 
@@ -105,68 +108,6 @@ const verifyVal = (...values) => {
   return 0
 }
 
-/**
- * 获取设备音视频
- * @param hasAudio
- * @param hasVideo
- * @returns {*}
- */
-const setMediaStream = (hasAudio, hasVideo) => {
-  let constraint = {
-    audio: hasAudio,
-    video: hasVideo
-  }
-  return navigator.mediaDevices.getUserMedia(constraint) // Promise
-}
-
-/**
- * 获取一个接入了分析器的audioBox
- * @param stream
- * @param fftSize
- * @returns {*}
- */
-const outputAudioData = (stream, fftSize) => {
-  let audioCtx = new AudioContext();
-  let gainNode = audioCtx.createGain();
-  let source = audioCtx.createMediaStreamSource(stream);
-  let analyser = audioCtx.createAnalyser()
-  source.connect(gainNode)
-  source.connect(analyser)
-  analyser.fftSize = fftSize
-  return {analyser, gainNode, audioCtx}
-}
-
-/**
- * 输入频域数据（数组元素为0~255int 的数组），得到一个整数音量值，fold用于调节输出整数的大小
- * @param array
- * @param fold
- * @returns {Number}
- */
-const computeVolume = (array, fold) => {
-  /*array is 32 length*/
-  let _result = 0
-  array.forEach((item) => {
-    _result += item
-  })
-  return parseInt(_result / fold)
-}
-
-/**
- * 拿到音频的src，输出傅里叶变换之后的频域图 和分析器 以及audioCtx
- * @param audioSrc
- * @param ffSize 快速傅里叶变换的横坐标
- */
-const readAudioTo_HZ_Array = (audioSrc, ffSize) => {
-  let audio = new Audio();
-  audio.src = audioSrc;
-  let audioBox = new AudioContext(); // 申请一个音频容器，可以对数据进行解码
-  let analyser = audioBox.createAnalyser();
-  let source = audioBox.createMediaElementSource(audio);
-  source.connect(analyser)
-  analyser.connect(audioBox.destination)
-  analyser.fftSize = ffSize
-  return {array: new Uint8Array(analyser.frequencyBinCount), analyser, audio, audioBox}
-}
 
 const setSession = (name, content) => {
   if (!name) return;
@@ -240,7 +181,7 @@ const removeStore = name => {
  * 遍历一个对象，并设置localStorage
  * @param info
  */
-const setUserInfoInLocal = (info) => {
+const setObjInLocal = (info) => {
   for (let i = 0; i < Object.keys(info).length; ++i) {
     setStore(Object.keys(info)[i], Object.values(info)[i])
     // console.log(window.localStorage)
@@ -272,57 +213,21 @@ const judgeOutDate = (Expires) => {
   }
 }
 
-/**
- * 根据名字拿到cookie的值
- * @param name
- * @returns {*}
- */
-const getCookie = (name) => {
-  let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-  if (arr = document.cookie.match(reg))
-    return (arr[2]);
-  else
-    return null;
-}
-
-/**
- * 根据名字设置cookie
- * @param name
- */
-const delCookie = (name) => {
-  let exp = new Date();
-  exp.setTime(exp.getTime() - 1);
-  let cval = getCookie(name);
-  if (cval != null) {
-    let a = `x_token=${name};Path=/;Domain=localhost:2048;Expires=Thu, 01-Jan-1970 00:00:00 GMT`;
-    console.log(a)
-    // document.cookie = name + "=" + cval + "Path=/;expires=" + exp.toGMTString();
-    document.cookie = a;
-    
-  }
-  
-}
-
-/**
- * 设置cookie的名字 值 和 过期时间（秒）
- * @param name
- * @param value
- * @param seconds
- */
-const setCookie = (name, value, seconds) => {
-  seconds = seconds || 0; //seconds有值就直接赋值，没有为0，这个根php不一样。
-  let expires = "";
-  if (seconds != 0) { //设置cookie生存时间
-    let date = new Date();
-    date.setTime(date.getTime() + (seconds * 1000));
-    expires = "; expires=" + date.toGMTString();
-  }
-  document.cookie = name + "=" + value.toString() + expires + "; path=/";
-  
-}
 
 export {
-  countFn, parseTime, judgeTime, randomNum, verifyVal, setMediaStream, outputAudioData, computeVolume,
-  readAudioTo_HZ_Array, getStore, removeStore, setStore, setUserInfoInLocal, judgeOutDate, getCookie,
-  delCookie, setCookie, removeAllStore,getSession,setSession,removeSession,removeAllSession
+  countFn, // 计数器
+  parseTime, // 时间戳转换器
+  judgeTime, // 时间判断器
+  randomNum, // 随机数产生器
+  verifyVal, // 赋值验证器
+  getStore, // 获取localStorage
+  removeStore, // 删除localStorage
+  setStore, // 设置localStorage
+  setObjInLocal, // 将对象设置在localStorage
+  judgeOutDate, // 判断过期
+  removeAllStore, // 移除所有localStorage
+  getSession, // 获取sessionStorage
+  setSession, // 设置sessionStorage
+  removeSession, // 移除sessionStorage
+  removeAllSession // 移除所有sessionStorage
 }
