@@ -22,6 +22,7 @@ export class compName extends Component {
 	render() {
 		return (
 			<div>
+        error
 			</div>
 		);
 	}

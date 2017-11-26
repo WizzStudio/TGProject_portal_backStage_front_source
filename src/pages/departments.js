@@ -22,6 +22,7 @@ export class departments extends Component {
 	render() {
 		return (
 			<div>
+        department
 			</div>
 		);
 	}

@@ -22,6 +22,7 @@ export class members extends Component {
 	render() {
 		return (
 			<div>
+        this is member
 			</div>
 		);
 	}

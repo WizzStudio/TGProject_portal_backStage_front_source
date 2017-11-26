@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
 
-@inject('appState')
+@inject('stateName')
 @observer
-export class projects extends Component {
+export class compName extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {}
@@ -22,7 +22,6 @@ export class projects extends Component {
 	render() {
 		return (
 			<div>
-        proj
 			</div>
 		);
 	}

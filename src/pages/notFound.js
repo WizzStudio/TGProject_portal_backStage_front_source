@@ -22,6 +22,7 @@ export class  notFound extends Component {
 	render() {
 		return (
 			<div>
+        404
 			</div>
 		);
 	}
