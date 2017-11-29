@@ -12,8 +12,10 @@ const appState = new AppState();
 // 加载样式
 import './common/styles/index.scss';
 
+
 // 加载路由
-import Route from './router/index.js';
+import Route1 from './router/topRouter.js';
+
 
 
 // 声明
@@ -25,7 +27,7 @@ const app = document.getElementById('root');
 /* 根实例 */
 ReactDOM.render(
   <Provider appState={appState}>
-    <Route/>
+    <Route1/>
   </Provider>,
   app
 );

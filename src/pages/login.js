@@ -23,7 +23,6 @@ export class login extends Component {
 	render() {
 		return (
 			<div>
-
         this is fucking login
 			</div>
 		);

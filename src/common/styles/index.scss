@@ -2,8 +2,12 @@
 @import "./mixins";
 @import "./variables";
 
+
+/* components */
+/*@import "components/navbar" */;
+
 body {
-  background-color: $clr_bg_gray;
+  background-color: $clr_bg_white;
 }
 
 

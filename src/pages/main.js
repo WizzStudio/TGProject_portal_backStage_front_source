@@ -1,18 +1,15 @@
 import React, {Component} from 'react';
+import { hashHistory } from 'react-router';
+import PropTypes from 'prop-types';
 import {observer, inject} from 'mobx-react';
-import {BrowserRouter as Router, Route, Switch,Prompt} from 'react-router-dom';
+import {Route, Switch,Prompt} from 'react-router-dom';
 
 
-/* components */
+/* 注入组件 */
 import NavBar from "../components/navbar"
 
-
-/* pages */
-import {Hello} from '../hello.js';
-import {departments} from "../pages/departments";
-import {login} from "../pages/login";
-import {projects} from "../pages/projects";
-import {members} from "../pages/members";
+/* 注入路由 */
+import Router2 from '../router/mainRouter'
 
 
 
@@ -21,12 +18,22 @@ import {members} from "../pages/members";
 export class main extends Component {
  
 	constructor(props) {
-		super(props)
+		super(props);
 		this.state = {
-		  
     }
 	}
+  
 	
+  static childContextTypes = {
+    history: PropTypes.object
+  };
+	
+	/*给props 挂载history变量 */
+  getChildContext () {
+    return { history: this.props.history }
+  }
+  
+  
   /*在渲染前调用*/
 	componentWillMount() {
 	}
@@ -41,13 +48,7 @@ export class main extends Component {
 		return (
 			<div>
         <NavBar/>
-        <Switch>
-          <Route component={login} path="/login"/>
-          <Route component={departments} path="/departments"/>
-          <Route component={projects} path="/projects"/>
-          <Route component={members} path="/members"/>
-          <Route component={Hello} path="/hello"/>
-        </Switch>
+        <Router2/>
       </div>
     );
   }
