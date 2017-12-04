@@ -38,6 +38,11 @@ module.exports = {
           'react-hot-loader',
           'babel-loader'
         ]
+      },
+      {
+        test:  /\.(png|jpg|jpeg|gif|woff)$/,
+        // exclude: /node_modules/,
+        loaders: 'file-loader'
       }
     ]
   },

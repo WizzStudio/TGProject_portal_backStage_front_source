@@ -3,6 +3,7 @@ import Paper from 'material-ui/Paper';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom'
 import Tabs, {Tab} from 'material-ui/Tabs';
+import Grid from 'material-ui/Grid';
 
 /*ICONS*/
 import People from 'material-ui-icons/People';
@@ -20,7 +21,7 @@ export default class navbar extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: window.util.getSession('hover_id')||0,
+      value: window.util.getSession('hover_id') || 0,
     };
   }
   
@@ -31,7 +32,7 @@ export default class navbar extends React.Component {
   
   handleChange = (event, value) => {
     this.setState({value});
-    window.util.setSession('hover_id',value);
+    window.util.setSession('hover_id', value);
     switch (value) {
       case 0:
         this.context.history.push('/departments');
@@ -55,21 +56,25 @@ export default class navbar extends React.Component {
   
   render() {
     return (
-      <Paper>
-        <Tabs
-          value={this.state.value}
-          onChange={this.handleChange}
-          fullWidth
-          indicatorColor={primary}
-          textColor={accent}
-        >
-          <Tab icon={<ViewQuilt/>} label="部门管理"/>
-          <Tab icon={<People/>} label="成员管理"/>
-          <Tab icon={<Airplay/>} label="项目管理"/>
-          <Tab icon={<ArrowForward/>} label="登录"/>
-        </Tabs>
-        {/*<Link to={"/login"}> 333 </Link>*/}
-      </Paper>
+      <Grid  container >
+        <Grid item xs={12} md={12} lg={12} sm={12}>
+          <Paper>
+            <Tabs
+              value={this.state.value}
+              onChange={this.handleChange}
+              fullWidth
+              indicatorColor={primary}
+              textColor={accent}
+            >
+              <Tab icon={<ViewQuilt/>} label="部门管理"/>
+              <Tab icon={<People/>} label="成员管理"/>
+              <Tab icon={<Airplay/>} label="项目管理"/>
+              <Tab icon={<ArrowForward/>} label="登录"/>
+            </Tabs>
+            {/*<Link to={"/login"}> 333 </Link>*/}
+          </Paper>
+        </Grid>
+      </Grid>
     );
   }
 }

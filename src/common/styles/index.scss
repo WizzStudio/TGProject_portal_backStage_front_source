@@ -6,6 +6,9 @@
 /* components */
 /*@import "components/navbar" */;
 
+/* pages */
+@import "pages/login";
+
 body {
   background-color: $clr_bg_white;
 }

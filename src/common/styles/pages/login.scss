@@ -1,0 +1,22 @@
+@import "../mixins";
+@import "../variables";
+
+.login {
+  &-box {
+    height: 90vh;
+    background: $clr_bg_gray;
+    background-position: 50% 50%;
+    background-size: cover;
+  }
+
+  &-main {
+    @include wh(100%, 100%);
+    @include allMidBox();
+    &-login{
+      margin-top: 80px;
+      @include wh(600px,400px);
+    }
+  }
+
+
+}

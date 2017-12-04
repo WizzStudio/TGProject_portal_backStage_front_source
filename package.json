@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axios": "^0.17.1",
+    "file-loader": "^1.1.5",
     "material-ui": "^1.0.0-beta.21",
     "material-ui-icons": "^1.0.0-beta.17",
     "mobx": "^3.3.2",
