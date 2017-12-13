@@ -8,6 +8,7 @@ import {departments} from "../pages/departments";
 import {login} from "../pages/login";
 import {projects} from "../pages/projects";
 import {members} from "../pages/members";
+import projectInfo from '../pages/projectInfo'
 
 
 
@@ -16,6 +17,7 @@ const RouteConfig = () => (
       <Route component={login} path="/login"/>
       <Route component={departments} path="/departments"/>
       <Route component={projects} path="/projects"/>
+      <Route component={projectInfo} path="/projectInfo"/>
       <Route component={members} path="/members"/>
       <Route component={Hello} path="/hello"/>
     </switch>

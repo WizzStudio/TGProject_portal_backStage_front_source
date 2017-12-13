@@ -6,7 +6,7 @@ import "babel-polyfill"
 // axios.defaults.baseURL = baseURL;
 
 axios.interceptors.response.use(function (response) {
-  return response;
+  return response.data;
 }, function (error) {
   if (error.response) {
     // The request was made and the server responded with a status code
