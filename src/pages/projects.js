@@ -39,8 +39,9 @@ export class projects extends Component {
 	}
  
 	getProjectInfo=()=>(id)=>{
-	  console.log(id)
-  }
+    this.props.appState.storeProjectId(id);
+    this.props.history.push('/projectInfo');
+  };
   
   changeProjectType = (event, value) => {
     this.setState({ nowFocus:value });

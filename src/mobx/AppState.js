@@ -3,6 +3,7 @@ import { observable,action} from 'mobx';
 
 class AppState {
   @observable testCount = 1;
+  @observable projectId = null;
   
   constructor() {
   }
@@ -10,6 +11,10 @@ class AppState {
  @action countUP(){
     this.testCount ++;
     console.log(this.testCount)
+  }
+  
+  @action storeProjectId(id){
+   this.projectId =id
   }
   
 }
