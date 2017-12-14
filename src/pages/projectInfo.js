@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import 'react-dates/lib/css/_datepicker.css';
 import 'react-dates/initialize';
 import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react-dates';
+import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List';
 import {observer, inject} from 'mobx-react';
-import {getProjectById} from '../service/API'
+import {getProjectById, getAllMember} from '../service/API'
 import MenuItem from 'material-ui/Menu/MenuItem';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
@@ -15,8 +16,22 @@ import {members} from "./members";
 const infoStyle = {
   boxPadding: {
     padding: "20px"
+  },
+  boxBorder: {
+    border: "1px solid #b3b3b3"
   }
 };
+
+let departmentFilter = (id) => {
+  switch (id) {
+    case 1:
+      return '工程师';
+    case 2:
+      return '设计师';
+    case 3:
+      return '产品';
+  }
+}
 
 
 @inject('appState')
@@ -55,43 +70,101 @@ class projectInfo extends React.Component {
         "uiprogress": 0
       },
       startDate: null,
-      endDate: null
+      endDate: null,
+      membersList: [],
+      cateList: [
+        {}
+      ]
     }
   }
   
+  
+  // 删除成员
   popMember = (id) => {
     // 状态机特性，保存改变状态前的状态 状态目前是原子性改变，保存上一步的状态进行改变，然后统一去触发视图更新
     let preInfo = this.state.info;
     for (let i = 0; i < preInfo.members.length; ++i) {
-      if (preInfo.members[i].id == id) {
-        preInfo.members.splice(i,1)
+      if (preInfo.members[i].id === id) {
+        preInfo.members.splice(i, 1)
       }
     }
     this.setState({
-      info:preInfo
+      info: preInfo
     })
   };
+  
+  // 添加成员
+  addMember = (member) => {
+    for (let item of this.state.info.members) {
+      if (member.id === item.id) {
+        return console.log('已有该成员')
+      }
+    }
+    let tempState = this.state.info
+    tempState.members.push(member)
+    
+    this.setState({
+      info:tempState
+    })
+  };
+  
+  // 删除分类
+  delCate = (id) => {
+  };
+  
+  
+  // 添加分类
+  addCate = () => {
+  
+  };
+  
+  // 渲染列表
+  _renderList = (api, listState, fn = () => {
+  }) => {
+    api().then((data) => {
+      this.setState({
+        [listState]: data
+      }, function () {
+        fn()
+      })
+    })
+  };
+  
+  _parseTime = () =>{
+    this.setState(preState=>({
+      info:{...preState,startDate:+ new Date(preState.startDate),endDate:+new Date(preState.endDate)}
+    }))
+  };
+  
   
   componentWillMount() {
     if (!this.props.appState.projectId) {
       return this.props.history.push('/projects')
     }
+    
     getProjectById(this.props.appState.projectId).then(data => {
       this.setState({
         info: data
-      })
+      });
+      
+      this._renderList(getAllMember, 'membersList')
+      
+      
     })
+    
   }
+  
   
   handleChange = key => event => {
     // console.log(event.target.value)
     let preInfo = this.state.info
-    preInfo[key]=  event.target.value
+    preInfo[key] = event.target.value
     
     this.setState({
-      info:preInfo
+      info: preInfo
     })
   };
+  
   
   renderInput = (keyName, label) => (
     <TextField
@@ -102,7 +175,18 @@ class projectInfo extends React.Component {
       margin="normal"
       fullWidth
     />
-  )
+  );
+  
+  
+  renderMemberItem = (memberList) => (
+    <List>
+      {memberList.map(n => (
+        <ListItem button style={infoStyle.boxBorder} onClick={this.addMember.bind(this,n)}>
+          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId)}/>
+        </ListItem>
+      ))}
+    </List>
+  );
   
   render() {
     return (
@@ -112,12 +196,13 @@ class projectInfo extends React.Component {
         {this.renderInput('introduction', '项目介绍')}
         <br/>
         
-        <Grid container spacing={24}>
+        <Grid container spacing={24} justify="center">
           <Grid item lg={6}>
             {this.renderInput('leaderId', '项目负责人Id')}
           </Grid>
-          <Grid item lg={6} justify="center">
+          <Grid item lg={6}>
             <p>开始时间和结束时间</p>
+            <p>{this.state.info.startDate}</p>
             <DateRangePicker
               startDate={this.state.startDate} // momentPropTypes.momentObj or null,
               endDate={this.state.endDate} // momentPropTypes.momentObj or null,
@@ -125,7 +210,10 @@ class projectInfo extends React.Component {
                 startDate, endDate
               })} // PropTypes.func.isRequired,
               focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-              onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
+              onFocusChange={focusedInput => {
+                this.setState({focusedInput})
+                this._parseTime()
+              }} // PropTypes.func.isRequired,
               startDateId={'1'}
               endDateId={'2'}
               showDefaultInputIcon={true}
@@ -151,12 +239,21 @@ class projectInfo extends React.Component {
         <br/>
         {this.renderInput('categories', '分类')} {/*list*/}
         
+        
         <Grid container spacing={12}>
-          {this.state.info.members.map(n => (
-            <Grid item lg={2}>
-              {Member(n, this.popMember)}
+          <Grid item lg={8}>
+            <Grid container spacing={12}>
+              {this.state.info.members.map(n => (
+                <Grid item lg={2}>
+                  {Member(n, this.popMember)}
+                </Grid>
+              ))}
             </Grid>
-          ))}
+          </Grid>
+          <Grid item lg={4}>
+            <p>添加成员</p>
+            {this.renderMemberItem(this.state.membersList)}
+          </Grid>
         </Grid>
       
       
