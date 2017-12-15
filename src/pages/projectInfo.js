@@ -13,6 +13,7 @@ import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import Categories from '../components/categories/categoriePicker'
+import { LinearProgress } from 'material-ui/Progress';
 
 const infoStyle = {
   boxPadding: {
@@ -68,7 +69,8 @@ class projectInfo extends React.Component {
       membersList: [],
       cateList: [
         {}
-      ]
+      ],
+      completed:0
     }
   }
   
@@ -95,7 +97,7 @@ class projectInfo extends React.Component {
       }
     }
     let tempState = this.state.info
-    tempState.members.push(member)
+    tempState.members.push(member);
     
     this.setState({
       info: tempState
@@ -182,24 +184,40 @@ class projectInfo extends React.Component {
   
   
   componentWillMount() {
+    this.setState({
+      completed:20
+    });
     if (!this.props.appState.projectId) {
       return this.props.history.push('/projects')
     }
     
-    if (!this.props.appState.projectId === -9) {
+    if (this.props.appState.projectId !== -9) {
       getProjectById(this.props.appState.projectId).then(data => {
         this.setState({
           info: data
         });
-        
-        this._renderList(getAllMember, 'membersList')
+        this.setState({
+          completed:60
+        });
+        this._renderList(getAllMember, 'membersList',()=>{
+          this.setState({
+            completed:100
+          });
+        })
         
         
       })
+    }else {
+      /*渲染人员列表*/
+      this._renderList(getAllMember, 'membersList',()=>{
+        this.setState({
+          completed:100
+        });
+      })
     }
     
-    /*渲染人员列表*/
-    this._renderList(getAllMember, 'membersList')
+  
+    
   }
   
   
@@ -256,6 +274,10 @@ class projectInfo extends React.Component {
   render() {
     return (
       <div style={infoStyle.boxPadding}>
+        {/*进度条*/}
+        <LinearProgress mode="determinate" value={this.state.completed} />
+        <br/>
+        
         {this.renderInput('projectName', '项目名')}
         <br/>
         {this.renderInput('introduction', '项目介绍')}
@@ -322,7 +344,7 @@ class projectInfo extends React.Component {
         </Grid>
         
         
-        <Tooltip placement="bottom" title="提交修改">
+        <Tooltip placement="bottom" title={this.props.appState.projectId === -9?"新建项目":"提交修改"}>
           <Button fab color="accent" style={infoStyle.absolute} onClick={this.updateInfo}>
             <AddIcon/>
           </Button>

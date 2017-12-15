@@ -25,8 +25,11 @@ class projTable extends React.Component{
                 <TableRow key={n.id}>
                   <TableCell>{n.projectName}</TableCell>
                   <TableCell>{n.introduction}</TableCell>
-                  <Button color="accent" onClick={this.props.enterFunc().bind(this,n.id)}>
+                  <Button color="primary" onClick={this.props.enterFunc().bind(this,n.id)}>
                     进入
+                  </Button>
+                  <Button color="accent" onClick={this.props.delFunc().bind(this,n.id)}>
+                    删除
                   </Button>
                 </TableRow>
               );
@@ -38,9 +41,11 @@ class projTable extends React.Component{
   }
 }
 
+
 projTable.propTypes = {
   projectList:PropTypes.array,
-  // enterFunc:PropTypes.Function
+  enterFunc:PropTypes.func,
+  delFunc:PropTypes.func
 };
 
 
