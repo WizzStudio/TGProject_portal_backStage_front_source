@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 import {observer, inject} from 'mobx-react';
+import {getAllMember,getMemberById,updateMemberInfo} from '../service/API'
+
+
 
 @inject('appState')
 @observer
@@ -17,12 +20,13 @@ export class members extends Component {
 	componentDidMount() {
 	}
 	
+
 	
 	/*渲染函数*/
 	render() {
 		return (
 			<div>
-        this is member
+   
 			</div>
 		);
 	}

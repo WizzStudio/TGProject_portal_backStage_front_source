@@ -6,18 +6,13 @@ import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react
 import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List';
 import {observer, inject} from 'mobx-react';
 import {getProjectById, getAllMember, updateProjInfo} from '../service/API'
-import MenuItem from 'material-ui/Menu/MenuItem';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
-import {parseTime} from '../common/scripts/utils'
 import Member from '../components/cards/member'
-import {members} from "./members";
 import AddIcon from 'material-ui-icons/Add';
 import Button from 'material-ui/Button';
-import DeleteIcon from 'material-ui-icons/Delete';
-import IconButton from 'material-ui/IconButton';
-import Typography from 'material-ui/Typography';
 import Tooltip from 'material-ui/Tooltip';
+import Categories from '../components/categories/categoriePicker'
 
 const infoStyle = {
   boxPadding: {
@@ -78,7 +73,7 @@ class projectInfo extends React.Component {
         "totalProgress": 0,
         "introduction": "对海量的医疗信息和数据进行分析和采集，通过集群计算，为医疗行业提供更加专业更加可靠的数据支撑，从而提供高效而准确的医疗手段和策略 ",
         "picUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511249995682&di=cd4f49399896958a9f203c2b29ae550f&imgtype=0&src=http%3A%2F%2Fwww.36dsj.com%2Fwp-content%2Fuploads%2F2015%2F03%2F514.jpg",
-        "categories": null,
+        "categories": [],
         "uiprogress": 0
       },
       startDate: null,
@@ -121,14 +116,43 @@ class projectInfo extends React.Component {
   };
   
   // 删除分类
-  delCate = (id) => {
-  
+  delCate = (cateItem) => {
+    let _tempState = this.state.info;
+    this._hasCate(cateItem, (index) => {
+      _tempState.categories.splice(index, 1)
+    })
+    this.setState({
+      info: _tempState
+    })
   };
   
   
   // 添加分类
-  addCate = () => {
+  addCate = (cateItem) => {
+    if (this._hasCate(cateItem)) {
+      return console.log("已经有该分类")
+    } else {
+      let _modifyInfo = this.state.info
+      this.state.info.categories.push(cateItem)
+      this.setState({
+        info: _modifyInfo
+      })
+    }
+    
+    
+  };
   
+  // 判断是否已经有该分类
+  _hasCate = (cateItem, fn = () => {
+  }) => {
+    // for (let item of this.state.info.categories) {
+    for (let i = 0; i < this.state.info.categories.length; ++i) {
+      if (cateItem.id === this.state.info.categories[i].id) {
+        fn(i);
+        return 1
+      }
+    }
+    return 0
   };
   
   // 渲染列表
@@ -185,6 +209,10 @@ class projectInfo extends React.Component {
   }
   
   
+  chooseCate = (data) => {
+    console.log(data)
+  }
+  
   handleChange = key => event => {
     // console.log(event.target.value)
     let preInfo = this.state.info
@@ -211,7 +239,7 @@ class projectInfo extends React.Component {
   updateInfo = () => {
     if (this.state.startDate && this.state.endDate) {
       this._parseTime();
-      updateProjInfo(this.state.info.id,this.state.info)
+      updateProjInfo(this.state.info.id, this.state.info)
     }
     console.log(this.state.info)
     
@@ -222,7 +250,7 @@ class projectInfo extends React.Component {
     <List>
       {memberList.map(n => (
         <ListItem button style={infoStyle.boxBorder} onClick={this.addMember.bind(this, n)}>
-          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId)+"-id-:"+n.id}/>
+          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId) + "-id-:" + n.id}/>
         </ListItem>
       ))}
     </List>
@@ -275,14 +303,10 @@ class projectInfo extends React.Component {
         {this.renderInput('picUrl', '图片链接')}
         <br/>
         
-        <p>分类暂时无法提供修改</p>
-        {/*{*/}
-        {/*this.state.info.categories.map(n => (*/}
-        {/*<Button color="primary" >*/}
-        {/*{n.description}*/}
-        {/*</Button>*/}
-        {/*))}*/}
-        
+        {/*分类*/}
+        <p>分类</p>
+        <Categories clickFn={this.chooseCate} type="display" delFn={this.delCate} cate={this.state.info.categories}/>
+        <Categories clickFn={this.addCate} type="picker"/>
         
         <Grid container spacing={12}>
           <Grid item lg={8}>
