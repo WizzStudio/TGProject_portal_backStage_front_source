@@ -5,13 +5,19 @@ import 'react-dates/initialize';
 import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react-dates';
 import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List';
 import {observer, inject} from 'mobx-react';
-import {getProjectById, getAllMember} from '../service/API'
+import {getProjectById, getAllMember, updateProjInfo} from '../service/API'
 import MenuItem from 'material-ui/Menu/MenuItem';
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import {parseTime} from '../common/scripts/utils'
 import Member from '../components/cards/member'
 import {members} from "./members";
+import AddIcon from 'material-ui-icons/Add';
+import Button from 'material-ui/Button';
+import DeleteIcon from 'material-ui-icons/Delete';
+import IconButton from 'material-ui/IconButton';
+import Typography from 'material-ui/Typography';
+import Tooltip from 'material-ui/Tooltip';
 
 const infoStyle = {
   boxPadding: {
@@ -19,7 +25,13 @@ const infoStyle = {
   },
   boxBorder: {
     border: "1px solid #b3b3b3"
-  }
+  },
+  absolute: {
+    flip: false,
+    position: 'fixed',
+    bottom: 32,
+    right: 32,
+  },
 };
 
 let departmentFilter = (id) => {
@@ -104,12 +116,13 @@ class projectInfo extends React.Component {
     tempState.members.push(member)
     
     this.setState({
-      info:tempState
+      info: tempState
     })
   };
   
   // 删除分类
   delCate = (id) => {
+  
   };
   
   
@@ -130,10 +143,27 @@ class projectInfo extends React.Component {
     })
   };
   
-  _parseTime = () =>{
-    this.setState(preState=>({
-      info:{...preState,startDate:+ new Date(preState.startDate),endDate:+new Date(preState.endDate)}
-    }))
+  
+  _parseTime = () => {
+    // let preState = this.state.info;
+    // preState.startDate = +new Date(this.state.startDate);
+    // preState.endDate = +new Date(this.state.endDate);
+    
+    
+    // this.setState(preState => ({
+    //   info: {...preState, startDate: +new Date(this.state.info.startDate), endDate: +new Date(this.state.info.endDate)}
+    // }))
+    
+    let preState = this.state.info;
+    // console.log(this.state.endDate._d);
+    // console.log(+new Date(this.state.endDate._d));
+    preState.startDate = +new Date(this.state.startDate._d);
+    preState.finishedDate = +new Date(this.state.endDate._d);
+    
+    
+    this.setState({
+      info: preState
+    })
   };
   
   
@@ -166,6 +196,7 @@ class projectInfo extends React.Component {
   };
   
   
+  // 渲染输入框
   renderInput = (keyName, label) => (
     <TextField
       id={keyName}
@@ -177,12 +208,21 @@ class projectInfo extends React.Component {
     />
   );
   
+  updateInfo = () => {
+    if (this.state.startDate && this.state.endDate) {
+      this._parseTime();
+      updateProjInfo(this.state.info.id,this.state.info)
+    }
+    console.log(this.state.info)
+    
+  };
+  
   
   renderMemberItem = (memberList) => (
     <List>
       {memberList.map(n => (
-        <ListItem button style={infoStyle.boxBorder} onClick={this.addMember.bind(this,n)}>
-          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId)}/>
+        <ListItem button style={infoStyle.boxBorder} onClick={this.addMember.bind(this, n)}>
+          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId)+"-id-:"+n.id}/>
         </ListItem>
       ))}
     </List>
@@ -210,10 +250,7 @@ class projectInfo extends React.Component {
                 startDate, endDate
               })} // PropTypes.func.isRequired,
               focusedInput={this.state.focusedInput} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
-              onFocusChange={focusedInput => {
-                this.setState({focusedInput})
-                this._parseTime()
-              }} // PropTypes.func.isRequired,
+              onFocusChange={focusedInput => this.setState({focusedInput})} // PropTypes.func.isRequired,
               startDateId={'1'}
               endDateId={'2'}
               showDefaultInputIcon={true}
@@ -237,7 +274,14 @@ class projectInfo extends React.Component {
         <br/>
         {this.renderInput('picUrl', '图片链接')}
         <br/>
-        {this.renderInput('categories', '分类')} {/*list*/}
+        
+        <p>分类暂时无法提供修改</p>
+        {/*{*/}
+        {/*this.state.info.categories.map(n => (*/}
+        {/*<Button color="primary" >*/}
+        {/*{n.description}*/}
+        {/*</Button>*/}
+        {/*))}*/}
         
         
         <Grid container spacing={12}>
@@ -255,6 +299,13 @@ class projectInfo extends React.Component {
             {this.renderMemberItem(this.state.membersList)}
           </Grid>
         </Grid>
+        
+        
+        <Tooltip placement="bottom" title="提交修改">
+          <Button fab color="accent" style={infoStyle.absolute} onClick={this.updateInfo}>
+            <AddIcon/>
+          </Button>
+        </Tooltip>
       
       
       </div>

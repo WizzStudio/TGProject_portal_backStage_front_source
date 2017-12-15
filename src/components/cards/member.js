@@ -54,9 +54,9 @@ function MemberCard(props, delFn = () => {
           <Typography component="p">
             {departmentFilter(props.departmentId)}
           </Typography>
-          {/*<Typography component="p">*/}
-          {/*{props.introduction}*/}
-          {/*</Typography>*/}
+          <Typography component="p">
+          Id：{props.id}
+          </Typography>
         </CardContent>
         {/*{tags.map(n => {*/}
         {/*return (*/}
