@@ -17,6 +17,11 @@ class AppState {
    this.projectId =id
   }
   
+  // 转换到添加项目
+  @action switchToAddProject(){
+    this.projectId =-9
+  }
+  
 }
 
 export default AppState;

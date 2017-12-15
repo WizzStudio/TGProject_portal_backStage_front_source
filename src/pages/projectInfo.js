@@ -5,7 +5,7 @@ import 'react-dates/initialize';
 import {DateRangePicker, SingleDatePicker, DayPickerRangeController} from 'react-dates';
 import List, {ListItem, ListItemIcon, ListItemText} from 'material-ui/List';
 import {observer, inject} from 'mobx-react';
-import {getProjectById, getAllMember, updateProjInfo} from '../service/API'
+import {getProjectById, getAllMember, updateProjInfo, createProject} from '../service/API'
 import TextField from 'material-ui/TextField';
 import Grid from 'material-ui/Grid';
 import Member from '../components/cards/member'
@@ -48,31 +48,18 @@ class projectInfo extends React.Component {
     super(props);
     this.state = {
       info: {
-        "id": 3,
-        "projectName": "基于大数据的医疗数据分析系统",
-        "leaderId": 7,
-        "startDate": 1511280000000,
-        "finishedDate": 1513008000000,
-        "members": [
-          {
-            "id": 6,
-            "username": "王星锦",
-            "college": "软件工程",
-            "departmentId": 1,
-            "projectId": 3,
-            "avatar": "http://dysmorsel2.oss-cn-hangzhou.aliyuncs.com/TG/avatar8.svg",
-            "introduction": "TG工作室PHP组组长",
-            "tag": "[\"哲学\",\"王比利\",\"眼睛很大\"]",
-            "gender": 1,
-            "age": 20
-          }
-        ],
-        "sourceUrl": "https://github.com/TGclub",
+        // "id": 3,
+        "projectName": "",
+        "leaderId": '',
+        "startDate": 0,
+        "finishedDate": 0,
+        "members": [],
+        "sourceUrl": "",
         "frontProgress": 0,
         "backProgress": 0,
         "totalProgress": 0,
-        "introduction": "对海量的医疗信息和数据进行分析和采集，通过集群计算，为医疗行业提供更加专业更加可靠的数据支撑，从而提供高效而准确的医疗手段和策略 ",
-        "picUrl": "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1511249995682&di=cd4f49399896958a9f203c2b29ae550f&imgtype=0&src=http%3A%2F%2Fwww.36dsj.com%2Fwp-content%2Fuploads%2F2015%2F03%2F514.jpg",
+        "introduction": "",
+        "picUrl": "",
         "categories": [],
         "uiprogress": 0
       },
@@ -179,6 +166,9 @@ class projectInfo extends React.Component {
     // }))
     
     let preState = this.state.info;
+    if (!this.state.startDate || !this.state.endDate) {
+      return false
+    }
     // console.log(this.state.endDate._d);
     // console.log(+new Date(this.state.endDate._d));
     preState.startDate = +new Date(this.state.startDate._d);
@@ -196,16 +186,20 @@ class projectInfo extends React.Component {
       return this.props.history.push('/projects')
     }
     
-    getProjectById(this.props.appState.projectId).then(data => {
-      this.setState({
-        info: data
-      });
-      
-      this._renderList(getAllMember, 'membersList')
-      
-      
-    })
+    if (!this.props.appState.projectId === -9) {
+      getProjectById(this.props.appState.projectId).then(data => {
+        this.setState({
+          info: data
+        });
+        
+        this._renderList(getAllMember, 'membersList')
+        
+        
+      })
+    }
     
+    /*渲染人员列表*/
+    this._renderList(getAllMember, 'membersList')
   }
   
   
@@ -237,11 +231,14 @@ class projectInfo extends React.Component {
   );
   
   updateInfo = () => {
-    if (this.state.startDate && this.state.endDate) {
-      this._parseTime();
-      updateProjInfo(this.state.info.id, this.state.info)
+    this._parseTime();
+    if (this.props.appState.projectId === -9) {
+      /*创建项目*/
+      createProject(this.state.info)
+    } else {
+      /*更新项目*/
+      updateProjInfo(this.state.info.id, this.state.info);
     }
-    console.log(this.state.info)
     
   };
   

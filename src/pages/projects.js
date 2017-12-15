@@ -11,6 +11,21 @@ import ExtensionIcon from 'material-ui-icons/Extension';
 import GavelIcon from 'material-ui-icons/Gavel';
 import RedeemIcon from 'material-ui-icons/Redeem'
 import {getProjectByCate} from '../service/API'
+import Tooltip from 'material-ui/Tooltip';
+import Button from 'material-ui/Button';
+import AddIcon from 'material-ui-icons/Add';
+
+
+const styles={
+    absolute: {
+      flip: false,
+      position: 'fixed',
+      bottom: 32,
+      right: 32,
+    },
+};
+
+
 
 @inject('appState')
 @observer
@@ -47,6 +62,12 @@ export class projects extends Component {
     this.setState({ nowFocus:value });
     this.renderTable(value)
   };
+  
+  // 添加一个项目
+  addProject = ()=>{
+    this.props.appState.switchToAddProject()
+    this.props.history.push('/projectInfo');
+  }
 	
 	/*渲染函数*/
 	render() {
@@ -63,6 +84,15 @@ export class projects extends Component {
         </BottomNavigation>
         <br/>
         <ProjectTable projectList={this.state.projects} enterFunc={this.getProjectInfo}/>
+        
+        
+        
+        {/*工具icon*/}
+        <Tooltip placement="bottom" title="添加项目">
+          <Button fab color="primary" style={styles.absolute} onClick={this.addProject}>
+            <AddIcon/>
+          </Button>
+        </Tooltip>
 			</div>
 		);
 	}
