@@ -27,6 +27,7 @@ class memberTable extends React.Component{
                 <TableCell>姓名</TableCell>
                 <TableCell >角色</TableCell>
                 <TableCell >专业</TableCell>
+                <TableCell >标签</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -36,6 +37,7 @@ class memberTable extends React.Component{
                     <TableCell>{n.username}</TableCell>
                     <TableCell>{this.props.appState.getDepartmentsById(n.departmentId)}</TableCell>
                     <TableCell>{n.college}</TableCell>
+                    <TableCell>{n.tag}</TableCell>
                     <Button color="primary" onClick={this.props.enterFunc.bind(this,n.id)}>
                       进入
                     </Button>

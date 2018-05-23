@@ -12,7 +12,18 @@ import Grid from 'material-ui/Grid';
 import Typography from 'material-ui/Typography';
 import {getAllMember, getMemberById, updateMemberInfo, getMembersByDepartmentId} from '../service/API'
 import MemberTable from '../components/tables/memberTable'
+import Tooltip from 'material-ui/Tooltip';
+import Button from 'material-ui/Button';
+import AddIcon from 'material-ui-icons/Add';
 
+const styles = {
+  absolute: {
+    flip: false,
+    position: 'fixed',
+    bottom: 32,
+    right: 32,
+  },
+};
 
 @inject('appState')
 @observer
@@ -57,11 +68,12 @@ export class members extends Component {
   componentDidMount() {
   }
   
+  addMember = () => {}
   delMember = (id) => {}
   
   getMemberInfo = (id) =>{
     getMemberById(id).then(res => {
-      console.log(res)
+    
     })
   }
   
@@ -79,6 +91,12 @@ export class members extends Component {
         <br/>
         
         <MemberTable memberList={this.state.memberLists} enterFunc={this.getMemberInfo} delFunc={this.delMember}/>
+        
+        <Tooltip placement="bottom" title="添加成员">
+          <Button fab color="primary" style={styles.absolute} onClick={this.addMember}>
+            <AddIcon/>
+          </Button>
+        </Tooltip>
       </div>
     );
   }
