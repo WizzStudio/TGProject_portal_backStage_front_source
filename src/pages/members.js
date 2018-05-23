@@ -14,6 +14,9 @@ export class members extends Component {
 	
 	/*在渲染前调用*/
 	componentWillMount() {
+	  getAllMember().then(res => {
+	    console.log(res)
+    })
 	}
 	
 	/*在第一次渲染后调用*/

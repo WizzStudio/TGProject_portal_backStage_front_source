@@ -14,6 +14,7 @@ import Button from 'material-ui/Button';
 import Tooltip from 'material-ui/Tooltip';
 import Categories from '../components/categories/categoriePicker'
 import { LinearProgress } from 'material-ui/Progress';
+import dayjs from 'dayjs'
 
 const infoStyle = {
   boxPadding: {
@@ -266,7 +267,7 @@ class projectInfo extends React.Component {
     <List>
       {memberList.map(n => (
         <ListItem button style={infoStyle.boxBorder} onClick={this.addMember.bind(this, n)}>
-          <ListItemText primary={n.username + "--" + departmentFilter(n.departmentId) + "-id-:" + n.id}/>
+          <ListItemText primary={n.username + "--" + this.props.appState.getDepartmentsById(n.departmentId) + "-id-:" + n.id}/>
         </ListItem>
       ))}
     </List>
@@ -290,7 +291,7 @@ class projectInfo extends React.Component {
           </Grid>
           <Grid item lg={6}>
             <p>开始时间和结束时间</p>
-            <p>{this.state.info.startDate}</p>
+            <p>{this.state.info.startDate? dayjs(new Date(this.state.info.startDate).toDateString()).format('YYYY-MM-DD') : 'X'} ~ { this.state.info.endDate ? dayjs(new Date(this.state.info.endDate).toDateString()).format('YYYY-MM-DD'): 'X'}</p>
             <DateRangePicker
               startDate={this.state.startDate} // momentPropTypes.momentObj or null,
               endDate={this.state.endDate} // momentPropTypes.momentObj or null,
