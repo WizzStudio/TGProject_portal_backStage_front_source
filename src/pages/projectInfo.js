@@ -255,6 +255,7 @@ class projectInfo extends React.Component {
       createProject(this.state.info)
     } else {
       /*更新项目*/
+      console.log(this.state.info.id, this.state.info)
       updateProjInfo(this.state.info.id, this.state.info);
     }
     
@@ -327,9 +328,9 @@ class projectInfo extends React.Component {
         <Categories clickFn={this.chooseCate} type="display" delFn={this.delCate} cate={this.state.info.categories}/>
         <Categories clickFn={this.addCate} type="picker"/>
         
-        <Grid container spacing={12}>
+        <Grid container spacing={8}>
           <Grid item lg={8}>
-            <Grid container spacing={12}>
+            <Grid container spacing={8}>
               {this.state.info.members.map(n => (
                 <Grid item lg={2}>
                   {Member(n, this.popMember)}

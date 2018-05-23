@@ -80,7 +80,7 @@ function CategoryItem(props) {
   if (props.type.toLowerCase() === 'display') {
     // console.log(props.cate)
     return (
-      <Grid container spacing={12}>
+      <Grid container spacing={16}>
         {
           props.cate.map(n=>(
             <Grid item lg={2}>
