@@ -18,6 +18,8 @@ const getMemberByName = (name) => {
   return fetch('get', `/TGProject/memberName/${name}`, {}, {})
 }
 
+
+
 /**
  * 查询所有成员
  * @returns {Promise<object>}
@@ -50,7 +52,7 @@ const getProjectByCate = (categroy) => {
  * @param id
  * @returns {Promise<object>}
  */
-const getDepartmentById = (id) => {
+const getMembersByDepartmentId = (id) => {
   return fetch('get', `/TGProject/department/${id}`, {}, {})
 }
 
@@ -186,7 +188,7 @@ export {
   getProjectById,
   getProjectByCate,
   getAllDepartment,
-  getDepartmentById,
+  getMembersByDepartmentId,
   creatMember,
   createProject,
   updateMemberInfo,

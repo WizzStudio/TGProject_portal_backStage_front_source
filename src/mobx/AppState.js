@@ -32,6 +32,9 @@ class AppState {
     return this.departments[id.toString()]
   }
   
+  @action getAllDepartments() {
+    return this.departments
+  }
 }
 
 export default AppState;

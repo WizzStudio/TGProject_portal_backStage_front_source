@@ -43,7 +43,7 @@ export class login extends Component {
     loginByName(this.state.name, this.state.password).then(res => {
       if (!parseInt(res.status)) {
         alert('登录成功')
-        this.props.history.push('/projectInfo')
+        this.props.history.push('/projects')
       }
     })
   };
